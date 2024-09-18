@@ -372,7 +372,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                    <!-- <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden">
                                 <img class="img-fluid w-100" src="{% static 'img/product1.jpg' %}" alt="">
@@ -614,7 +614,44 @@
                                 </div>
                             </div>
                         </div>
+                    </div> -->
+        {% if categoryProduct.products%}
+            {% for i in categoryProduct.products %}
+            <!-- {{i.images.0}} -->
+        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+            <div class="product-item bg-light mb-4">
+                <div class="product-img position-relative overflow-hidden" style="height: 250px; width: 250px;">
+                    <img src="{{ i.images.0 }}" alt="{{ i.title }}" class="img-fluid" style="height: 250px; width: 250px;"   >  
+                    <div class="product-action">
+                        <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i class="fa fa-shopping-cart"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href="" onclick=""><i class="far fa-heart"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                     </div>
+                </div>
+                <div class="text-center py-4">
+                    <a class="h6 text-decoration-none text-truncate" href="/details/{{i.id}}">{{i.title}}</a>
+                    <div class="d-flex align-items-center justify-content-center mt-2">
+                        <h5>₹{{i.discountPercentage}}</h5><h6 class="text-muted ml-2"><del>₹{{i.price}}</del></h6>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center mb-1">
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small>{{i.rating}}</small>
+                    </div>
+                    <p> Description:{{i.description}}</p>
+                    <p> Category:{{i.category}}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+            <h1>No Elements Found</h1>
+        {% endif %}
+    </div>
                     <div class="col-12">
                         <nav>
                           <ul class="pagination justify-content-center">

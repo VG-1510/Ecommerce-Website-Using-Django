@@ -49,7 +49,10 @@ def details(request,id):
     return render(request, 'detail.html',context={'cartList':resp.json()})
 
 def shop(request):
-    return render(request, 'shop.html')
+    response = requests.get('https://dummyjson.com/products?limit=12')
+    data = response.json()
+    print(data)
+    return render(request, 'shop.html',context={"categoryProduct":data})
 
 def members(request):
     if request.method == "POST":
@@ -125,3 +128,34 @@ def remove_from_cart(req,id):
     # cartList = [item for item in cartList if item['id'] != id]
     # request.session['cartList'] = cartList
     # return redirect(reverse('cartList'))
+
+# def Add_New_Product(req, product):
+
+    userId = req.session.get('currentUser')  
+    user = UserTable.objects.get(id=userId) 
+
+    # Load the user's cart and add the new product
+    cartList = json.loads(user.cart) 
+    cartList.append(product)
+    user.cart = json.dumps(cartList)
+    user.save()
+
+    # Send a POST request to the external API to add the product
+    response = requests.post('https://dummyjson.com/products/add', 
+                         headers={'Content-Type': 'application/json'}, 
+                         data=json.dumps({
+                            'title': 'iPad Mini 2021 Starlight',    
+                            'discountPercentage': '₹19.48',
+                         }))
+
+    print(response.json())
+    # Redirect to the cart page
+    return redirect('/cart')
+
+# Example usage (this would typically be called in a view)
+    product = {
+        'title': 'iPad Mini 2021 Starlight',
+        'discountPercentage': '₹19.48',
+    }
+    Add_New_Product(product)
+
