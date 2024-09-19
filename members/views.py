@@ -12,22 +12,26 @@ def index(request):
         query = request.POST['Searchquery']
         return redirect('category/'+query)
         
-    response = requests.get('https://dummyjson.com/products/category-list')
-    data = response.json()
-    return render(request, 'index.html',context={"categoryList":data})
+    response1 = requests.get('https://dummyjson.com/products/category-list')
+    data1 = response1.json()
+    response2 = requests.get('https://dummyjson.com/products?limit=8&skip=20')
+    data2 = response2.json()
+    return render(request, 'index.html',context={"categoryList":data1,"categoryProduct":data2})
 
 def cart(request):
     userId = request.session.__getitem__('currentUser')
     user = UserTable.objects.get(id = userId)
     cartList = json.loads(user.cart)
     data = []
+    subtotal = 0
     sum = 10 
     for item in cartList:
         resp = requests.get('https://dummyjson.com/products/'+str(item))
         data.append(resp.json())
     for i in data:
         sum+=i['discountPercentage']
-    return render(request, 'cart.html',context={'cartList':data,"total":sum})
+        subtotal+=i['discountPercentage']
+    return render(request, 'cart.html',context={'cartList':data,"total":sum,"subtotal":subtotal})
 
 def contact(request):
     if request.method == 'POST':
@@ -42,7 +46,19 @@ def contact(request):
     return render(request, 'contact.html')
 
 def checkout(request):
-    return render(request, 'checkout.html')
+    userId = request.session.__getitem__('currentUser')
+    user = UserTable.objects.get(id = userId)
+    cartList = json.loads(user.cart)
+    data = []
+    subtotal = 0
+    sum = 10 
+    for item in cartList:
+        resp = requests.get('https://dummyjson.com/products/'+str(item))
+        data.append(resp.json())
+    for i in data:
+        sum+=i['discountPercentage']
+        subtotal+=i['discountPercentage']
+    return render(request, 'checkout.html',context={'cartList':data,"total":sum,"subtotal":subtotal})
 
 def details(request,id):
     resp = requests.get('https://dummyjson.com/products/'+str(id))
@@ -51,7 +67,6 @@ def details(request,id):
 def shop(request):
     response = requests.get('https://dummyjson.com/products?limit=12')
     data = response.json()
-    print(data)
     return render(request, 'shop.html',context={"categoryProduct":data})
 
 def members(request):
