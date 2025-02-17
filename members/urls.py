@@ -18,5 +18,8 @@ urlpatterns = [
     # cart
     path('add_to_cart/<int:id>',views.addToCart),
     path('remove/<int:id>', views.remove_from_cart),
+    path('changeQty',views.changeQty),
+    path('Wish_list/',views.Wishlist),
+    path('add_to_wishList/<int:id>',views.addToWishList)
     # path('add_product/',views.Add_New_Product),
 ]

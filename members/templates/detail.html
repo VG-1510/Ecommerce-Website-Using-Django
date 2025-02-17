@@ -236,7 +236,7 @@
                             <h3>{{cartList.title}}</h3>
                             <h4>Rating: {{cartList.rating}}<i class="fas fa-star"></i></h4>
                             <h4>Brand: {{cartList.brand}}</h4>
-                            <h3 class="font-weight-semi-bold mb-4">₹{{cartList.discountPercentage}}</h3>
+                            <h3 class="font-weight-semi-bold mb-4">₹{{cartList.discountedprice|floatformat:2 }}</h3>
                             <h4>In Stock: {{cartList.stock}}</h4>
                             <h5>Availability Status: {{cartList.availabilityStatus}}</h5>
                             <div class="d-flex align-items-center mb-4 pt-2">

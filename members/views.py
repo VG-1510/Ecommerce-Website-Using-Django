@@ -10,28 +10,69 @@ from django.urls import reverse
 def index(request):
     if request.method == "POST":
         query = request.POST['Searchquery']
-        return redirect('category/'+query)
-        
+        return redirect('category/' + query)
     response1 = requests.get('https://dummyjson.com/products/category-list')
     data1 = response1.json()
     response2 = requests.get('https://dummyjson.com/products?limit=8&skip=20')
-    data2 = response2.json()
-    return render(request, 'index.html',context={"categoryList":data1,"categoryProduct":data2})
+    
+    if response2.status_code == 200:
+        data2 = response2.json().get('products', []) 
+    else:
+        data2 = []
+
+    processed_data = []
+    
+    for product in data2:
+        product_price = product['price'] 
+        discount_percentage = product.get('discountPercentage', 0)
+
+        total_price = product_price * (1 - discount_percentage / 100)
+        product['total_price'] = total_price
+        
+        processed_data.append(product)
+
+    return render(request, 'index.html', context={"categoryList": data1, "categoryProduct": processed_data})
 
 def cart(request):
-    userId = request.session.__getitem__('currentUser')
-    user = UserTable.objects.get(id = userId)
-    cartList = json.loads(user.cart)
+    userId = request.session.get('currentUser')
+    user = UserTable.objects.get(id=userId)
+
+    cart_data = user.cart or '[]'
+    try:
+        cartList = json.loads(cart_data)
+    except json.JSONDecodeError:
+        return render(request, 'cart.html', context={'error': 'Invalid cart data.'})
+
     data = []
     subtotal = 0
-    sum = 10 
+    shipping_charge = 10
+
     for item in cartList:
-        resp = requests.get('https://dummyjson.com/products/'+str(item))
-        data.append(resp.json())
-    for i in data:
-        sum+=i['discountPercentage']
-        subtotal+=i['discountPercentage']
-    return render(request, 'cart.html',context={'cartList':data,"total":sum,"subtotal":subtotal})
+        product_id, quantity = item  
+        resp = requests.get(f'https://dummyjson.com/products/{product_id}')
+        
+        if resp.status_code == 200:
+            product_data = resp.json()
+            product_price = product_data['price']
+            discount_percentage = product_data.get('discountPercentage', 0)
+            discountedPrice = product_price * (1 - discount_percentage / 100)
+
+            total_price = discountedPrice * quantity
+            product_data['quantity'] = quantity
+            product_data['total_price'] = total_price
+            product_data['discountedprice'] = discountedPrice
+
+            data.append(product_data)
+            subtotal += total_price
+        else:
+            print(f"Error fetching product {product_id}: {resp.status_code}")
+
+    if subtotal >= 10:
+        sum = subtotal + shipping_charge
+    else:
+        sum = subtotal
+
+    return render(request, 'cart.html', context={'cartList': data, 'subtotal': subtotal, 'sum': sum, 'shipping_charge': shipping_charge})
 
 def contact(request):
     if request.method == 'POST':
@@ -46,28 +87,77 @@ def contact(request):
     return render(request, 'contact.html')
 
 def checkout(request):
-    userId = request.session.__getitem__('currentUser')
-    user = UserTable.objects.get(id = userId)
-    cartList = json.loads(user.cart)
+    userId = request.session.get('currentUser')
+    user = UserTable.objects.get(id=userId)
+
+    cart_data = user.cart or '[]'  
+    try:
+        cartList = json.loads(cart_data)
+    except json.JSONDecodeError:
+        return render(request, 'checkout.html', context={'error': 'Invalid cart data.'})
+
     data = []
     subtotal = 0
-    sum = 10 
+    shipping_charge = 10  
+
     for item in cartList:
-        resp = requests.get('https://dummyjson.com/products/'+str(item))
-        data.append(resp.json())
-    for i in data:
-        sum+=i['discountPercentage']
-        subtotal+=i['discountPercentage']
-    return render(request, 'checkout.html',context={'cartList':data,"total":sum,"subtotal":subtotal})
+        product_id, quantity = item  
+        resp = requests.get(f'https://dummyjson.com/products/{product_id}')
+        
+        if resp.status_code == 200:
+            product_data = resp.json()
+            product_price = product_data['price']
+            discount_percentage = product_data.get('discountPercentage', 0)
+            discountedPrice = product_price * (1 - discount_percentage / 100)
+
+            total_price = discountedPrice * quantity 
+            product_data['quantity'] = quantity
+            product_data['total_price'] = total_price 
+            product_data['discountedprice'] = discountedPrice
+
+            data.append(product_data)
+            subtotal += total_price  
+        else:
+            print(f"Error fetching product {product_id}: {resp.status_code}")
+
+    if subtotal >= 10:
+        sum = subtotal + shipping_charge 
+    else:
+        sum = subtotal 
+
+    return render(request, 'checkout.html', context={'cartList': data, 'subtotal': subtotal, 'sum': sum, 'shipping_charge': shipping_charge})
 
 def details(request,id):
     resp = requests.get('https://dummyjson.com/products/'+str(id))
-    return render(request, 'detail.html',context={'cartList':resp.json()})
+    if resp.status_code == 200:
+            product_data = resp.json()
+            product_price = product_data['price']  
+            discount_percentage = product_data.get('discountPercentage',0)
+            discountedPrice = product_price * (1 - discount_percentage/ 100 )
+            print(discountedPrice)
+            product_data['discountedprice'] = discountedPrice
+    return render(request, 'detail.html',context={'cartList':product_data})
 
 def shop(request):
     response = requests.get('https://dummyjson.com/products?limit=12')
-    data = response.json()
-    return render(request, 'shop.html',context={"categoryProduct":data})
+    
+    if response.status_code == 200:
+        data = response.json().get('products', [])
+    else:
+        data = []
+    
+    processed_data = []
+    
+    for product in data:
+        product_price = product['price'] 
+        discount_percentage = product['discountPercentage'] 
+        
+        total_price = (product_price * (1 - discount_percentage / 100))
+        product['total_price'] = total_price
+        
+        processed_data.append(product)
+    
+    return render(request, 'shop.html', context={"categoryProduct": processed_data})
 
 def members(request):
     if request.method == "POST":
@@ -111,9 +201,23 @@ def homepage(req,id):
 def categoryPage(req,category):
     # print(category)
     response = requests.get('https://dummyjson.com/products/category/'+category)
-    data = response.json()
+    if response.status_code == 200:
+        data = response.json().get('products', []) 
+    else:
+        data = []
 
-    return render(req,'category.html',context={"categoryProduct":data})
+    processed_data = []
+    for product in data:
+        product_price = product['price'] 
+        discount_percentage = product.get('discountPercentage', 0)
+        
+
+        total_price = product_price * (1 - discount_percentage / 100)
+        product['total_price'] = total_price
+        
+        processed_data.append(product)
+
+    return render(req,'category.html',context={"categoryProduct":processed_data})
 
 def search(req):
     response = requests.get('https://dummyjson.com/products/search?q=phone/')
@@ -121,22 +225,38 @@ def search(req):
 
     return render(req,'category.html',context={"categoryProduct":data})
 
-def addToCart(req,id):
-    userId = req.session.__getitem__('currentUser')
-    user = UserTable.objects.get(id = userId)
-    cartList = json.loads(user.cart)
-    print("cartlist ",cartList)
-    cartList.append(id)
-    user.cart = str(cartList)
-    user.save() 
+def addToCart(req, id):
+    userId = req.session.get('currentUser')
+    user = UserTable.objects.get(id=userId)
+
+    cart_data = user.cart or '[]'
+    try:
+        cartList = json.loads(cart_data)
+    except json.JSONDecodeError:
+        cartList = []
+
+    found = False
+    for i, (product_id, quantity) in enumerate(cartList):
+        if product_id == id:
+            cartList[i] = (product_id, quantity + 1)
+            found = True
+            break
+
+    if not found:
+        cartList.append((id, 1))
+
+    user.cart = json.dumps(cartList)
+    user.save()
 
     return redirect('/cart')
 
-def remove_from_cart(req,id):
+def remove_from_cart(req, id):
     userId = req.session.__getitem__('currentUser')
-    user = UserTable.objects.get(id = userId)
+    user = UserTable.objects.get(id=userId)
     cartList = json.loads(user.cart)
-    cartList.remove(id) 
+
+    cartList = [item for item in cartList if item[0] != id]
+
     user.cart = str(cartList)
     user.save()
     return redirect('/cart')
@@ -144,18 +264,16 @@ def remove_from_cart(req,id):
     # request.session['cartList'] = cartList
     # return redirect(reverse('cartList'))
 
-# def Add_New_Product(req, product):
+def Add_New_Product(req, product):
 
     userId = req.session.get('currentUser')  
     user = UserTable.objects.get(id=userId) 
 
-    # Load the user's cart and add the new product
     cartList = json.loads(user.cart) 
     cartList.append(product)
     user.cart = json.dumps(cartList)
     user.save()
 
-    # Send a POST request to the external API to add the product
     response = requests.post('https://dummyjson.com/products/add', 
                          headers={'Content-Type': 'application/json'}, 
                          data=json.dumps({
@@ -164,13 +282,101 @@ def remove_from_cart(req,id):
                          }))
 
     print(response.json())
-    # Redirect to the cart page
-    return redirect('/cart')
 
-# Example usage (this would typically be called in a view)
     product = {
         'title': 'iPad Mini 2021 Starlight',
         'discountPercentage': '₹19.48',
     }
     Add_New_Product(product)
+    return redirect('/cart')
 
+def changeQty(req):
+    userId = req.session.get('currentUser')
+    user = UserTable.objects.get(id=userId)
+
+    cart_data = user.cart or '[]' 
+    try:
+        cartList = json.loads(cart_data)
+    except json.JSONDecodeError:
+        cartList = []
+
+    product_id = req.GET.get('product_id')
+    quantity = req.GET.get('qty')
+
+    product_id = int(product_id)
+    quantity = int(quantity)
+
+    print("AAA", product_id, quantity)
+
+    for i, item in enumerate(cartList):
+        p_id, q = item 
+        if p_id == product_id:
+            q += quantity 
+            if q < 0:  
+                q = 0
+            cartList[i] = (p_id, q)
+            break
+
+    user.cart = json.dumps(cartList)
+    user.save()
+    
+    return redirect('/cart')
+
+def Wishlist(req):
+    userId = req.session.get('currentUser')
+    user = UserTable.objects.get(id=userId)
+
+    cart_data = user.cart or '[]'
+    try:
+        cartList = json.loads(cart_data)
+    except json.JSONDecodeError:
+        return render(req, 'wishList.html', context={'error': 'Invalid data.'})
+
+    data = []
+    subtotal = 0
+
+    for item in cartList:
+        product_id, quantity = item  
+        resp = requests.get(f'https://dummyjson.com/products/{product_id}')
+        
+        if resp.status_code == 200:
+            product_data = resp.json()
+            product_price = product_data['price']
+            discount_percentage = product_data.get('discountPercentage', 0)
+            discountedPrice = product_price * (1 - discount_percentage / 100)
+
+            total_price = discountedPrice * quantity
+            product_data['quantity'] = quantity
+            product_data['total_price'] = total_price
+            product_data['discountedprice'] = discountedPrice
+
+            data.append(product_data)
+            subtotal += total_price
+        else:
+            print(f"Error fetching product {product_id}: {resp.status_code}")
+    return render(req, 'wishList.html', context={'cartList': data})
+
+def addToWishList(req,id):
+    userId = req.session.get('currentUser')
+    user = UserTable.objects.get(id=userId)
+
+    cart_data = user.cart or '[]'
+    try:
+        cartList = json.loads(cart_data)
+    except json.JSONDecodeError:
+        cartList = []
+
+    found = False
+    for i, (product_id, quantity) in enumerate(cartList):
+        if product_id == id:
+            cartList[i] = (product_id, quantity + 1)
+            found = True
+            break
+
+    if not found:
+        cartList.append((id, 1))
+
+    user.cart = json.dumps(cartList)
+    user.save()
+
+    return redirect('/wishList/')

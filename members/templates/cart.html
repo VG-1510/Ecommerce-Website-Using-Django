@@ -44,8 +44,8 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">My Account</button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" href="{% url 'members' %}" type="button">Sign in</button>
-                            <button class="dropdown-item" href="{% url 'register' %}" type="button">Register</button>
+                            <a class="dropdown-item" href="{% url 'members' %}" type="button">Sign in</a>
+                            <a class="dropdown-item" href="{% url 'register' %}" type="button">Register</a>
                         </div>
                     </div>
                     <div class="btn-group mx-2">
@@ -264,23 +264,23 @@
                             {% for i in cartList %}
                             <tr>
                                 <td class="align-middle"><img src="{{i.images.0}}" alt="" style="width: 50px;"> {{i.title}}</td>
-                                <td class="align-middle">₹{{i.discountPercentage}}</td>
+                                <td class="align-middle"><strike> ₹{{i.price|floatformat:2}}</strike>₹{{ i.discountedprice |floatformat:2 }}</td>
                                 <td class="align-middle">
                                     <div class="input-group quantity mx-auto" style="width: 100px;">
                                         <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus" >
+                                            <a class="btn btn-sm btn-primary btn-minus" href="/changeQty?product_id={{i.id}}&qty=-1">
                                             <i class="fa fa-minus"></i>
-                                            </button>
+                                            </a>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="1">
+                                        <input type="text" class="form-control form-control-sm bg-secondary border-0 text-center" value="{{ i.quantity }}" min="1">
                                         <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
+                                            <a class="btn btn-sm btn-primary btn-plus" href="/changeQty?product_id={{i.id}}&qty=1">
                                                 <i class="fa fa-plus"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle">₹{{i.discountPercentage}}</td>
+                                <td class="align-middle">₹{{i.total_price|floatformat:2}}</td>
                                 <form action="/remove/{{i.id}}" method="POST">
                                     {% csrf_token%}
                                     <td class="align-middle"><button  class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
@@ -288,7 +288,7 @@
                             </tr>
                             {% endfor %}
                         {% else %}
-                        <h1>OH! Your Cart Looks Empty</h1>
+                        <h1>OH! Your Cart Looks Empty {{error}}</h1>
                         {% endif %}
                     </tbody>
                 </table>
@@ -307,19 +307,23 @@
                     <div class="border-bottom pb-2">
                         <div class="d-flex justify-content-between mb-3">
                             <h6>Subtotal</h6>
-                            <h6>₹{{subtotal}}</h6>
+                            <h6>₹{{subtotal|floatformat:2 }}</h6>
                             <!-- {% for i in cartList %}
                             {% endfor %} -->
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">₹10</h6>
+                            {% if shipping_charge %}
+                            <p>{{shipping_charge}}</p>
+                            {% elif shipping_charge is None %}
+                                <p>Free</p>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="pt-2">
                         <div class="d-flex justify-content-between mt-2">
                             <h5>Total:</h5>
-                            <h5>₹{{total}}</h5>
+                            <h5>₹{{sum|floatformat:2}}</h5>
                         </div>
                         <a href="{% url 'checkout' %}" class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</a>
                     </div>

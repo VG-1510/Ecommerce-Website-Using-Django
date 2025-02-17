@@ -68,32 +68,13 @@
                             <a class="dropdown-item" href="{% url 'register' %}" type="button">Register</a>
                         </div>
                     </div>
-                    <div class="btn-group mx-2">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                            data-toggle="dropdown">USD</button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">EUR</button>
-                            <button class="dropdown-item" type="button">GBP</button>
-                            <button class="dropdown-item" type="button">CAD</button>
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                            data-toggle="dropdown">EN</button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">FR</button>
-                            <button class="dropdown-item" type="button">AR</button>
-                            <button class="dropdown-item" type="button">RU</button>
-                        </div>
-                    </div>
                 </div>
                 <div class="d-inline-flex align-items-center d-block d-lg-none">
-                    <a href="/add_to_cart/" class="btn px-0 ml-2">
+                    <a href="/WishList" class="btn px-0 ml-2">
                         <i class="fas fa-heart text-dark"></i>
                         <span class="badge text-dark border border-dark rounded-circle"
                             style="padding-bottom: 2px;">0</span>
                     </a>
-                    <a href="/add_to_cart/" class="btn px-0 ml-2">
                         <i class="fas fa-shopping-cart text-dark"></i>
                         <span class="badge text-dark border border-dark rounded-circle"
                             style="padding-bottom: 2px;">0</span>
@@ -245,7 +226,7 @@
                     </ol>
                     <div class="carousel-inner">
                         <div class="carousel-item position-relative active" style="height: 430px;">
-                            <img class="position-absolute w-100 h-100" src="{% static 'img/carousel1.jpg' %}"
+                            <img class="position-absolute w-100 h-100" src="{% static 'img/mens.jpg' %}"
                                 style="object-fit: cover;">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
@@ -259,7 +240,7 @@
                             </div>
                         </div>
                         <div class="carousel-item position-relative" style="height: 430px;">
-                            <img class="position-absolute w-100 h-100" src="{% static 'img/carousel2.jpg' %}"
+                            <img class="position-absolute w-100 h-100" src="{% static 'img/women.jpg' %}"
                                 style="object-fit: cover;">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
@@ -277,19 +258,19 @@
             </div>
             <div class="col-lg-4">
                 <div class="product-offer mb-30" style="height: 200px;">
-                    <img class="img-fluid" src="{% static 'img/offer1.jpg' %}" alt="">
+                    <img class="img-fluid" src="{% static 'img/menshoe.jpg' %}" alt="">
                     <div class="offer-text">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+                        <a href="category/mens-shoes" class="btn btn-primary">Shop Now</a>
                     </div>
                 </div>
                 <div class="product-offer mb-30" style="height: 200px;">
-                    <img class="img-fluid" src="{% static 'img/offer2.jpg' %}" alt="">
+                    <img class="img-fluid" src="{% static 'img/women jewel.jpg' %}" alt="">
                     <div class="offer-text">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+                        <a href="category/womens-jewellery" class="btn btn-primary">Shop Now</a>
                     </div>
                 </div>
             </div>
@@ -350,278 +331,50 @@
     </div>
     <!-- Categories End -->
 
-    <div class="row">
-
-        <!-- Products Start -->
-        {% if categoryProduct.products%}
-        {% for i in categoryProduct.products %}
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden" style="height: 250px; width: 250px;">
-                    <img src="{{ i.images.0 }}" alt="{{ i.title }}" class="img-fluid"
-                        style="height: 250px; width: 250px;">
-                    <div class="product-action">
-                        <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i
-                                class="fa fa-shopping-cart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href="" onclick=""><i class="far fa-heart"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                        <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                    </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="/details/{{i.id}}">{{i.title}}</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>₹{{i.discountPercentage}}</h5>
-                        <h6 class="text-muted ml-2"><del>₹{{i.price}}</del></h6>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small>{{i.rating}}</small>
-                    </div>
-                    <p> Description:{{i.description}}</p>
-                    <p> Category:{{i.category}}</p>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% else %}
-        <h1>No Elements Found</h1>
-        {% endif %}
-    </div>
-    <!-- <div class="container-fluid pt-5 pb-3">
+    <div class="container-fluid pt-5 pb-3">
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Featured Products</span></h2>
         <div class="row px-xl-5">
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/tablet.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_product/"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+            {% if categoryProduct%}
+            {% for product in categoryProduct %}
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden" style="height: 250px; width: 250px;">
+                            <img src="{{ product.images.0 }}" alt="{{ product.title }}" class="img-fluid"
+                                style="height: 250px; width: 250px;">
+                            <div class="product-action">
+                                <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{product.id}}"><i class="fa fa-shopping-cart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="/add_to_wishList/{{product.id}}"><i class="far fa-heart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">iPad Mini 2021 Starlight</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹19.48</h5><h6 class="text-muted ml-2"><del>₹499.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/tshirt.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Gigabyte Aorus Men Tshirt</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹12.6</h5><h6 class="text-muted ml-2"><del>₹24.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small>(99)</small>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate" href="/details/{{product.id}}">{{ product.title }}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>₹{{ product.total_price|floatformat:2 }}</h5>
+                                <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del></h6>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                                <h4>Rating: {{product.rating}}<i class="fas fa-star"></i></h4>
+                            </div>
+                            <p> Description:{{product.description}}</p>
+                            <p> Category:{{product.category}}</p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/plant.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">House Showpiece Plant</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹19.45</h5><h6 class="text-muted ml-2"><del>₹39.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/shoes.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_to_cart/"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Nike Baseball Cleats</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹61.4</h5><h6 class="text-muted ml-2"><del>₹79.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/ball.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Cricket Ball</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹12.93</h5><h6 class="text-muted ml-2"><del>₹12.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/watch.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Rolex Submariner Watch</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹12999.99</h5><h6 class="text-muted ml-2"><del>₹13999.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/dress.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Corset With Black Skirt</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹69.99</h5><h6 class="text-muted ml-2"><del>₹79.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{% static 'img/perfume.jpg' %}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/add_to_cart/{{i.id}}"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">Dolce Shine Eau de</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>₹59.99</h5><h6 class="text-muted ml-2"><del>₹69.99</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small class="far fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
+            {% else %}
+            <h1>No Elements Found</h1>
+            {% endif %}
         </div>
-    </div> -->
-    <!-- Products End -->
-
+    </div>  
 
     <!-- Offer Start -->
     <div class="container-fluid pt-5 pb-3">
         <div class="row px-xl-5">
             <div class="col-md-6">
                 <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="{% static 'img/offer1.jpg' %}" alt="">
+                    <img class="img-fluid" src="{% static 'img/menshoe.jpg' %}" alt="">
                     <div class="offer-text">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
@@ -631,7 +384,7 @@
             </div>
             <div class="col-md-6">
                 <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="{% static 'img/offer2.jpg' %}" alt="">
+                    <img class="img-fluid" src="{% static 'img/women jewel.jpg' %}" alt="">
                     <div class="offer-text">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
