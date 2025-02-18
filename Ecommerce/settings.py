@@ -34,7 +34,7 @@ EMAIL_HOST_USER = 'gohilvaibhav31@gmail.com'
 EMAIL_HOST_PASSWORD = 'nhpyipdvepxdfawg'
 DEFAULT_FROM_EMAIL = 'gohilvaibhav31@gmail.com'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['crud-janv.onrender.como']
 
 
 # Application definition
