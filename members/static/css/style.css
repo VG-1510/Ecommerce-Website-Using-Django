@@ -9710,3 +9710,18 @@ a.text-dark:hover, a.text-dark:focus {
     transform: translateY(-15px);
   }
 }
+
+@media (max-width: 768px) {
+  .btn {
+      font-size: 14px; /* Bigger buttons */
+      padding: 10px 15px;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+      font-size: 90%; /* Scale text for mobile */
+  }
+  
+  .form-control {
+      font-size: 14px; /* Improve input field readability */
+  }
+}
