@@ -35,7 +35,10 @@ def index(request):
 
 def cart(request):
     userId = request.session.get('currentUser')
-    user = UserTable.objects.get(id=userId)
+    if userId:
+        user = UserTable.objects.get(id=userId)
+    else:
+        print("Please Login")
 
     cart_data = user.cart or '[]'
     try:
