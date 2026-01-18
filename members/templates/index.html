@@ -108,6 +108,34 @@
             </div>
         </div>
     </div>
+    {% if messages %}
+        <div id="message-box" style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f44336;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            font-weight: bold;
+            z-index: 9999;
+            ">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+        <script>
+            setTimeout(() => {
+            const box = document.getElementById("message-box");
+            if (box) {
+                box.style.transition = "opacity 1s ease";
+                box.style.opacity = "0";
+                setTimeout(() => box.remove(), 1000); // remove after fade-out
+            }
+            }, 5000);
+        </script>
+    {% endif %}
     <!-- Topbar End -->
 
 

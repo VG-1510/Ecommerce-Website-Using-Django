@@ -312,9 +312,9 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            {% if shipping_charge %}
-                            <p>{{shipping_charge}}</p>
-                            {% elif shipping_charge is None %}
+                            {% if shipping_charge > 0 %}
+                                <p>₹{{ shipping_charge }}</p>
+                            {% else %}
                                 <p>Free</p>
                             {% endif %}
                         </div>

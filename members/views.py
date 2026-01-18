@@ -32,14 +32,14 @@ def index(request):
         processed_data.append(product)
 
     return render(request, 'index.html', context={"categoryList": data1, "categoryProduct": processed_data})
-
+    
 def cart(request):
     userId = request.session.get('currentUser')
-    if userId:
-        user = UserTable.objects.get(id=userId)
-    else:
-        print("Please Login")
-
+    if not userId:
+        messages.error(request, 'You must be logged in to view the cart.')
+        return redirect("index")
+    
+    user = UserTable.objects.get(id=userId)
     cart_data = user.cart or '[]'
     try:
         cartList = json.loads(cart_data)
@@ -48,7 +48,7 @@ def cart(request):
 
     data = []
     subtotal = 0
-    shipping_charge = 10
+    shipping_charge = 10    
 
     for item in cartList:
         product_id, quantity = item  
@@ -70,12 +70,15 @@ def cart(request):
         else:
             print(f"Error fetching product {product_id}: {resp.status_code}")
 
-    if subtotal >= 10:
+    if subtotal > 10:
         sum = subtotal + shipping_charge
+        shipping = shipping_charge  
     else:
         sum = subtotal
+        shipping = 0
 
-    return render(request, 'cart.html', context={'cartList': data, 'subtotal': subtotal, 'sum': sum, 'shipping_charge': shipping_charge})
+
+    return render(request, 'cart.html', context={'cartList': data, 'subtotal': subtotal, 'sum': sum, 'shipping_charge': shipping})
 
 def contact(request):
     if request.method == 'POST':
